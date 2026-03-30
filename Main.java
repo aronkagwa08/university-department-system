@@ -1,17 +1,64 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 public class Main {
+   
     public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+         ArrayList<Student> students = new ArrayList<>();
+         try{
+             System.out.print("How many students do you want to enter? ");
+            int count = input.nextInt();
+            input.nextLine();
 
-        Student s1 = new Student("Aron", "S101", "aron@email.com", "Computer Science");
-        Lecturer l1 = new Lecturer("Dr. John", "L201",
-                "john@email.com", 50000, "IT Department");
+            for (int i = 0; i < count; i++) {
 
-        s1.enrollCourse("OOP");
-        s1.displayRole();
+                System.out.print("Enter student name: ");
+                String name = input.nextLine();
 
-        l1.displayRole();
-        System.out.println("Total Payment: " + l1.calculatePayment());
+                System.out.print("Enter student age: ");
+                int age = input.nextInt();
+                input.nextLine();
 
-        Course c1 = new Course("CS101", "Object Oriented Programming", 3);
-        System.out.println("Total Courses Created: " + Course.getTotalCourses());
+                students.add(new Student(name, age));
+            }
+             FileWriter writer = new FileWriter("students.txt");
+
+            for (Student s : students) {
+                writer.write(s.toFileString() + "\n");
+            }
+
+            writer.close();
+            System.out.println("Data saved to file.");
+
+            // ===== READ FROM FILE =====
+            File file = new File("students.txt");
+            Scanner reader = new Scanner(file);
+
+            System.out.println("\n--- DATA FROM FILE ---");
+
+            while (reader.hasNextLine()) {
+
+                String line = reader.nextLine();
+                String[] data = line.split(",");
+
+                String name = data[0];
+                int age = Integer.parseInt(data[1]);
+
+                Student s = new Student(name, age);
+                s.displayStudent();
+            }
+
+            reader.close();
+
+        } catch (IOException e) {
+            System.out.println("File error occurred.");
+        } catch (Exception e) {
+            System.out.println("Invalid input.");
+        } finally {
+            System.out.println("Program finished.");
+        }
     }
 }
